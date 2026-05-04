@@ -11,7 +11,7 @@ app.post("/ai", async (req, res) => {
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.HF_KEY}`,
+          Authorization: `Bearer ${process.env.HF_KEY}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -20,11 +20,25 @@ app.post("/ai", async (req, res) => {
       }
     );
 
-    const data = await response.json();
-    res.json(data);
+    const text = await response.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return res.json({
+        reply: "HF returned invalid response",
+        raw: text
+      });
+    }
+
+    const reply = data?.[0]?.generated_text || data?.generated_text || "No response";
+
+    res.json({ reply });
+
   } catch (err) {
-    res.json({ error: "request failed" });
+    res.json({ reply: "request failed" });
   }
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
