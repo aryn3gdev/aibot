@@ -22,17 +22,22 @@ app.post("/ai", async (req, res) => {
 
     const text = await response.text();
 
+    // 🔥 Handle HF "loading model" case
+    if (text.includes("loading")) {
+      return res.json({ reply: "Model is loading, try again." });
+    }
+
     let data;
     try {
       data = JSON.parse(text);
     } catch {
-      return res.json({
-        reply: "HF returned invalid response",
-        raw: text
-      });
+      return res.json({ reply: text });
     }
 
-    const reply = data?.[0]?.generated_text || data?.generated_text || "No response";
+    const reply =
+      data?.[0]?.generated_text ||
+      data?.generated_text ||
+      "No response";
 
     res.json({ reply });
 
