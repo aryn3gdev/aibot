@@ -7,7 +7,7 @@ app.use(express.json());
 app.post("/ai", async (req, res) => {
   try {
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/gpt2",
+      "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill",
       {
         method: "POST",
         headers: {
