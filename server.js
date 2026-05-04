@@ -7,7 +7,7 @@ app.use(express.json());
 app.post("/ai", async (req, res) => {
   try {
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/google/flan-t5-large",
+      "https://api-inference.huggingface.co/models/gpt2",
       {
         method: "POST",
         headers: {
@@ -21,11 +21,6 @@ app.post("/ai", async (req, res) => {
     );
 
     const text = await response.text();
-
-    // 🔥 Handle HF "loading model" case
-    if (text.includes("loading")) {
-      return res.json({ reply: "Model is loading, try again." });
-    }
 
     let data;
     try {
